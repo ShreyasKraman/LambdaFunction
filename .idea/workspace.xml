@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00821fbf-0491-462a-aae2-c10bcd29c196" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/example/SimpleLambdaMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/example/forgotpassword.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LamdaFuncationCall.PNG" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -78,16 +76,27 @@
         </counts>
       </usages-collector>
     </session>
+    <session id="187690143">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.11" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+    </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/example/forgotpassword.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1717">
+            <state relative-caret-position="119">
               <caret line="37" column="56" selection-start-line="37" selection-start-column="47" selection-end-line="37" selection-end-column="56" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#7419#7440#0" expanded="true" />
+                <element signature="e#7614#7632#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -112,7 +121,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GradleLocalSettings">
     <option name="myGradleHomes">
@@ -415,9 +424,9 @@
     <option name="projectSyncType">
       <map>
         <entry key="$USER_HOME$/Documents/Shreyas/AWS Cloud/spring-session-2.0.6.RELEASE" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
         <entry key="$PROJECT_DIR$/../TSK" value="PREVIEW" />
         <entry key="$PROJECT_DIR$/../TracXpense" value="PREVIEW" />
-        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
       </map>
     </option>
   </component>
@@ -445,7 +454,7 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="27" />
     <option name="width" value="801" />
     <option name="height" value="573" />
@@ -456,19 +465,24 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="lamdafunction" type="b2602c69:ProjectViewProjectNode" />
-              <item name="lamdafunction" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="LamdaFunction" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LamdaFunction" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LamdaFunction" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LamdaFunction" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -510,11 +524,12 @@
       <workItem from="1541478702786" duration="1961000" />
       <workItem from="1541537314274" duration="15986000" />
       <workItem from="1541710310359" duration="2751000" />
+      <workItem from="1541714965044" duration="1320000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="52078000" />
+    <option name="totallyTimeSpent" value="53398000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
@@ -523,7 +538,7 @@
       <window_info id="UI Designer" order="1" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Favorites" order="3" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="4" visible="true" weight="0.27611336" />
+      <window_info active="true" content_ui="combo" id="Project" order="4" visible="true" weight="0.28097165" />
       <window_info id="Structure" order="5" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="6" />
       <window_info anchor="bottom" id="Terminal" order="0" sideWeight="0.49959514" visible="true" weight="0.3285968" />
@@ -605,9 +620,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="6" column="3" selection-start-line="6" selection-start-column="3" selection-end-line="6" selection-end-column="3" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -620,10 +632,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/example/forgotpassword.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1717">
+        <state relative-caret-position="119">
           <caret line="37" column="56" selection-start-line="37" selection-start-column="47" selection-end-line="37" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#7419#7440#0" expanded="true" />
+            <element signature="e#7614#7632#0" expanded="true" />
           </folding>
         </state>
       </provider>
