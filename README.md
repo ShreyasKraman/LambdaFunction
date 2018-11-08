@@ -5,7 +5,7 @@ Lambda function connected with SNS and consuming SES and DynamoDB service. This 
 ## The flow
 
 The flow of the diagram is as follows
-[[https://github.com/ShreyasKraman/LamdaFunction/LamdaFuncationCall.png|alt=Function flow]]
+[alt=Function_flow](https://github.com/ShreyasKraman/LamdaFunction/LamdaFuncationCall.png)
 
 
 ## Built with
