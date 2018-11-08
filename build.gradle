@@ -1,0 +1,41 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'webapp'
+version = '1.0-SNAPSHOT'
+
+description = """"""
+
+sourceCompatibility = 6
+targetCompatibility = 6
+
+
+
+repositories {
+        
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-core', version:'1.1.0'
+
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.442'
+
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-events
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '2.2.2'
+
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-ses
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-ses', version: '1.11.442'
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-cloudwatch
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-cloudwatch', version: '1.11.442'
+}
+
+task buildZip(type: Zip) {
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.compileClasspath
+    }
+}
+
+build.dependsOn buildZip
