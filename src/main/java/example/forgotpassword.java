@@ -101,7 +101,7 @@ public class forgotpassword implements RequestHandler<SNSEvent, String> {
             String mailAndToken[] = eventMessage.trim().split(",");
 
             //Get the existing email id and token from table
-            item = table.getItem("EmailID", mailAndToken[0]);
+            item = table.getItem("EmailId", mailAndToken[0],"Token",mailAndToken[1]);
             //Increment DynamoDB metric count
             dynamodbMetric++;
 
@@ -109,8 +109,7 @@ public class forgotpassword implements RequestHandler<SNSEvent, String> {
             if (item == null) {
 
                 //create new item
-                item = new Item().withPrimaryKey("EmailID", mailAndToken[0])
-                        .withString("Token",mailAndToken[1]);
+                item = new Item().withPrimaryKey("EmailId", mailAndToken[0],"Token",mailAndToken[1]);
                 table.putItem(item);
                 //Increment DynamoDB metric count
                 dynamodbMetric++;
@@ -122,13 +121,13 @@ public class forgotpassword implements RequestHandler<SNSEvent, String> {
         }
 
         //Build Email (SES) data
-        final String to = item.getString("EmailID");
+        final String to = item.getString("EmailId");
 
         final String subject = "Link to reset password - Expense tracker application";
 
         final String htmlbody = "<h2>Hi,</h2>"
                 + "<br/>Click on this link to reset your password = www.example.com/reset?id="
-                + item.getString("EmailID") + "&token="+item.getString("Token")
+                + item.getString("EmailId") + "&token="+item.getString("Token")
                 + "<br/><br/>Regards,<br/>TrackXpense Team";
 
         sendEmail(to,fromAddress,subject,htmlbody);
@@ -214,10 +213,10 @@ public class forgotpassword implements RequestHandler<SNSEvent, String> {
 
     public Table createTable(DynamoDB dynamoDB) throws InterruptedException {
         List<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();
-        attributeDefinitions.add(new AttributeDefinition().withAttributeName("EmailID").withAttributeType("S"));
+        attributeDefinitions.add(new AttributeDefinition().withAttributeName("EmailId").withAttributeType("S"));
 
         List<KeySchemaElement> keySchema = new ArrayList<KeySchemaElement>();
-        keySchema.add(new KeySchemaElement().withAttributeName("EmailID").withKeyType(KeyType.HASH));
+        keySchema.add(new KeySchemaElement().withAttributeName("EmailId").withKeyType(KeyType.HASH));
 
         CreateTableRequest request = new CreateTableRequest()
                 .withTableName(tableName)
