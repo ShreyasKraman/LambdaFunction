@@ -1,4 +1,4 @@
-# LambdaFunction
+# Lambda Function
 
 Lambda function connected with SNS and consuming SES and DynamoDB service. This function sends a reset token to the user who has requested to reset password for their corresponding account.
 
