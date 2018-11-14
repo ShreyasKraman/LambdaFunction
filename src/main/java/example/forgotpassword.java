@@ -5,6 +5,7 @@ import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
 import com.amazonaws.services.cloudwatch.model.*;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
@@ -20,8 +21,8 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.*;
 import javafx.scene.control.Tab;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.*;
 
 public class forgotpassword implements RequestHandler<SNSEvent, String> {
 
@@ -43,7 +44,8 @@ public class forgotpassword implements RequestHandler<SNSEvent, String> {
     static int sesMetric = 0;
     static int lambdaMetric = 0;
     static int dynamodbMetric = 0;
-
+    static String to = "";
+    static String token = "";
 
     @Override
     public String handleRequest(SNSEvent message, Context context){
@@ -72,88 +74,111 @@ public class forgotpassword implements RequestHandler<SNSEvent, String> {
         }
 
         String dynamoDBTableName = table.getTableName();
-
-        Item item = null;
         String snsTopicName = null;
 
         try{
 
-            SNSEvent.SNSRecord record = message.getRecords().get(0);
+                SNSEvent.SNSRecord record = message.getRecords().get(0);
 
-            String topicArn = record.getSNS().getTopicArn();
+                String topicArn = record.getSNS().getTopicArn();
 
-            int index = topicArn.lastIndexOf(":");
+                int index = topicArn.lastIndexOf(":");
 
-            snsTopicName = topicArn.substring(index+1,topicArn.length());
+                snsTopicName = topicArn.substring(index+1,topicArn.length());
 
-            //event message contains email id and token sent from web api
-            String eventMessage = record.getSNS().getMessage();
+                //event message contains email id and token sent from web api
+                String eventMessage = record.getSNS().getMessage();
 
-            //If no sns message then stop the program and return empty value
-            if(eventMessage.isEmpty() || eventMessage == null){
-                return "";
-            }
+                //If no sns message then stop the program and return empty value
+                if(eventMessage.isEmpty() || eventMessage == null){
+                    return "";
+                }
 
-            //Increment SNS metric count
-            snsMetric++;
+                //Increment SNS metric count
+                snsMetric++;
 
-            //store email id and token in an array
-            String mailAndToken[] = eventMessage.trim().split(",");
+                //store email id and token in an array
+                String mailAndToken[] = eventMessage.trim().split(",");
+                to = mailAndToken[0];
+                token = mailAndToken[1];
 
-            //Get the existing email id and token from table
-            item = table.getItem("EmailId", mailAndToken[0],"Token",mailAndToken[1]);
-            //Increment DynamoDB metric count
-            dynamodbMetric++;
+                Map<String,AttributeValue> key_to_get = new HashMap<String,AttributeValue>();
+                key_to_get.put("EmailId",new AttributeValue(mailAndToken[0]));
 
-            //If not item exists
-            if (item == null) {
 
-                //create new item
-                item = new Item().withPrimaryKey("EmailId", mailAndToken[0],"Token",mailAndToken[1]);
-                table.putItem(item);
+                //Get the existing email id and token from table
+                GetItemRequest request = new GetItemRequest()
+                        .withKey(key_to_get)
+                        .withTableName(tableName);
+
+               Map<String,AttributeValue> item = client.getItem(request).getItem();
+
                 //Increment DynamoDB metric count
                 dynamodbMetric++;
 
-            }
+                //If not item exists
+                if (item == null) {
+
+                    Date date = new Date();
+
+                    long ttl = 20 * 60 * 1000;
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    calendar.add(calendar.MINUTE,20);
+
+                    //create new item
+                    Item newItem = new Item().withPrimaryKey("EmailId", mailAndToken[0])
+                                        .withString("Token",mailAndToken[1])
+                                        .with("ttl",calendar.getTimeInMillis()/1000);
+
+                    table.putItem(newItem);
+                    //Increment DynamoDB metric count
+                    dynamodbMetric++;
+
+                    //Build Email (SES) data
+
+                    final String subject = "Link to reset password - Expense tracker application";
+
+                    final String htmlbody = "<h2>Hi,</h2>"
+                            + "<br/>Click on this link to reset your password = www.example.com/reset?id="
+                            +  to + "&token="+token
+                            + "<br/><br/>Regards,<br/>TrackXpense Team";
+
+                    sendEmail(to,fromAddress,subject,htmlbody);
+
+                    //Increment ses metric count
+                    sesMetric++;
+
+                    //Create custom metric
+
+                    //Lambda metric
+                    updateMetric("with function name",functionName,
+                            "Lambda Access",(double)lambdaMetric,"CSYE6225-Lambda");
+
+                    //dynamoDB metric
+                    updateMetric("with table name",dynamoDBTableName,
+                            "DynamoDB Access",(double)dynamodbMetric,"CSYE6225-DynamoDB");
+
+                    //SNS metric
+                    updateMetric("with topic name",snsTopicName,
+                            "SNS Access",(double)snsMetric,"CSYE6225-SNS");
+
+                    //SES metric
+                    updateMetric("mail","Send",
+                            "SES Access",(double)sesMetric,"CSYE6225-SES");
+
+
+                    return "Success - Item created.";
+
+                }
         }catch (Exception exception){
             System.err.println("Items failed.");
             exception.printStackTrace();
+            return "Error";
         }
 
-        //Build Email (SES) data
-        final String to = item.getString("EmailId");
-
-        final String subject = "Link to reset password - Expense tracker application";
-
-        final String htmlbody = "<h2>Hi,</h2>"
-                + "<br/>Click on this link to reset your password = www.example.com/reset?id="
-                + item.getString("EmailId") + "&token="+item.getString("Token")
-                + "<br/><br/>Regards,<br/>TrackXpense Team";
-
-        sendEmail(to,fromAddress,subject,htmlbody);
-
-        //Increment ses metric count
-        sesMetric++;
-
-        //Create custom metric
-
-        //Lambda metric
-        updateMetric("with function name",functionName,
-                "Lambda Access",(double)lambdaMetric,"CSYE6225-Lambda");
-
-        //dynamoDB metric
-        updateMetric("with table name",dynamoDBTableName,
-                "DynamoDB Access",(double)dynamodbMetric,"CSYE6225-DynamoDB");
-
-        //SNS metric
-        updateMetric("with topic name",snsTopicName,
-                "SNS Access",(double)snsMetric,"CSYE6225-SNS");
-
-        //SES metric
-        updateMetric("mail","Send",
-                "SES Access",(double)sesMetric,"CSYE6225-SES");
-
-        return message.toString();
+        return "Item already exists";
 
     }
 
@@ -227,7 +252,6 @@ public class forgotpassword implements RequestHandler<SNSEvent, String> {
                         .withWriteCapacityUnits(6L));
 
         Table table = dynamoDB.createTable(request);
-
         table.waitForActive();
 
         return table;
