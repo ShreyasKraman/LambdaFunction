@@ -38,6 +38,8 @@ public class forgotpassword implements RequestHandler<SNSEvent, String> {
 
     static String fromAddress = System.getenv("From_Addr");
 
+    static String hostAddress = System.getenv("Host_Name");
+
     static DynamoDBMapper mapper = new DynamoDBMapper(client);
 
     static int snsMetric = 0;
@@ -141,8 +143,9 @@ public class forgotpassword implements RequestHandler<SNSEvent, String> {
                     final String subject = "Link to reset password - Expense tracker application";
 
                     final String htmlbody = "<h2>Hi,</h2>"
-                            + "<br/>Click on this link to reset your password = www.example.com/reset?id="
-                            +  to + "&token="+token
+                            + "<br/><p>It seems you requested for a password reset. Please click on the following link to reset your password</p>"
+                            + "<br/>Reset Link => "+hostAddress+"/reset_email?id="+  to + "&token="+token
+                            +"<br/><p><b>Disclaimer:</b>This link will only be valid for 20 mins</p>"
                             + "<br/><br/>Regards,<br/>TrackXpense Team";
 
                     sendEmail(to,fromAddress,subject,htmlbody);
